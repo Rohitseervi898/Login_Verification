@@ -61,4 +61,4 @@ const LoginUser = asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200, {user, accessToken, refreshToken}, "Login successful"));
 })
 
-export {registerUser};
+export {registerUser, LoginUser};
