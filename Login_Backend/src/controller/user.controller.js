@@ -34,24 +34,27 @@ const registerUser = asyncHandler(async(req,res)=>{
         throw new ApiError(400,"User already existed");
     }
 
-    const otp = generateOTP();
+    const otp = generateOTP();//otp generating function
+
     await sendOTPEmail(email, otp);
 
     await OTP.findOneAndDelete({email:email.toLowerCase()});
     await OTP.create({
         email: email.toLowerCase(),
-        otp: otp
+        username,
+        password,
+        otp
     })
 
-    const user = await User.create({
-        username:username.toLowerCase(),
-        email:email.toLowerCase(),
-        password,
-    })
+    // const user = await User.create({
+    //     username:username.toLowerCase(),
+    //     email:email.toLowerCase(),
+    //     password,
+    // })
 
     return res
     .status(201)
-    .json(new ApiResponse(201,user, "User registered successfully"));
+    .json(new ApiResponse(201,"you have 5 min", "User registered successfully"));
 })
 
 // OTP Verification Function
@@ -69,10 +72,20 @@ const VerifyOTP = asyncHandler(async(req,res)=>{
     if(otpRecord.otp !== otp){
         throw new ApiError(400, "Invalid OTP");
     }
+
+    const {username,password}=otpRecord;
+
+    const user = await User.create({
+        username:username.toLowerCase(),
+        email:email.toLowerCase(),
+        password,
+    })
+
     await OTP.findOneAndDelete({email: email.toLowerCase()});
+
     return res
     .status(200)
-    .json(new ApiResponse(200, null, "OTP verified successfully"));
+    .json(new ApiResponse(200, user, "OTP verified successfully"));
 })
 
 // Login function
