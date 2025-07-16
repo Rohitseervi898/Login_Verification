@@ -9,6 +9,7 @@ app.use(cors({
     credentials:true
 }))
 app.use(express.json({limit: "16kb"}))
+app.use(cookieParser())
 
 import UserRoter from "./routes/User.route.js";
 app.use("/api/user", UserRoter);

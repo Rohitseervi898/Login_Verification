@@ -1,10 +1,26 @@
 import React, { useState } from 'react'
 import OTPInput from 'react-otp-input'
 import { useNavigate } from 'react-router-dom';
+import apiconnector from '../APIConnector.js'
+import { useAuth } from '../Context/AuthContext';
 
 const Verification = () => {
     const [otp,setotp]=useState("");
     const navigate = useNavigate();
+    const { user } = useAuth();
+
+    const VerifyOTP= async (e)=>{
+      e.preventDefault();
+      await apiconnector.post('/verify-otp',{email:user,otp})
+      .then(
+        console.log("OTP Verified"),
+        navigate('/')
+      )
+      .catch((err)=>{
+        console.error("Error verifying OTP:", err);
+        
+      })
+    }
   return (
     <>
     <div className='flex flex-col items-center justify-center h-screen w-screen'>
@@ -15,11 +31,12 @@ const Verification = () => {
                 value={otp}
                 onChange={setotp}
                 numInputs={6}
-                containerStyle={{display: 'flex', justifyContent: 'center'}}inputStyle={{width: '40px', height: '50px',backgroundColor:'white', margin: '0 5px', fontSize: '24px', borderRadius: '8px', border: '1px solid #ccc'}}
+                containerStyle={{display: 'flex', justifyContent: 'center'}}
+                inputStyle={{width: '40px', height: '50px',backgroundColor:'white', margin: '0 5px', fontSize: '24px', borderRadius: '8px', border: '1px solid #ccc'}}
                 focusStyle={{border: '2px solid #007bff'}} 
                 renderInput={(props)=><input {...props} />} 
             />
-            <button onClick={()=>{navigate('/')}} type='submit' className='w-full h-10 bg-blue-500 text-white rounded-lg'>Verify</button>
+            <button onClick={VerifyOTP} type='submit' className='w-full h-10 bg-blue-500 text-white rounded-lg'>Verify</button>
         </form>
       </div>
     </div>

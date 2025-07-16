@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {FaEyeSlash} from 'react-icons/fa'
 import { FaEye } from 'react-icons/fa'
+import apiconnector from '../APIConnector.js'
 
 const Login = () => {
   const navigate=useNavigate();
@@ -12,6 +13,19 @@ const Login = () => {
     e.preventDefault()
     setenable(!enable)
   };
+   // Assuming email is the same as username for login
+
+  const handleLogin=(e)=>{
+    e.preventDefault();
+    apiconnector.post('/login',{password,email:username,username})
+    .then((response)=>{
+      console.log("Login successful", response.data);
+      navigate('/home');
+    })
+    .catch((error)=>{
+      console.log("Login failed", error);
+    })
+  }
 
   return (
     <>
@@ -36,7 +50,7 @@ const Login = () => {
           <button onClick={handleeye} className='absolute right-0 bottom-24 bg-transparent h-10 w-10 rounded-md flex items-center justify-center'>
             {enable ? <FaEyeSlash className='text-gray-700'/> : <FaEye className='text-gray-700'/>}
           </button>
-          <button onClick={() => { navigate('/home') }} className='w-full h-10 bg-blue-500 text-white rounded-lg'>Login</button>
+          <button onClick={handleLogin} className='w-full h-10 bg-blue-500 text-white rounded-lg'>Login</button>
           
           <p className='text-black '>Don't have an account? <span className='text-blue-500 cursor-pointer' onClick={() => { navigate('/signup') }}>Register</span></p>  
         </form>

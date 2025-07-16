@@ -60,9 +60,11 @@ const registerUser = asyncHandler(async(req,res)=>{
 // OTP Verification Function
 const VerifyOTP = asyncHandler(async(req,res)=>{
     const {email,otp}=req.body;
+
     if(!email || !otp){
         throw new ApiError(400, "Email and OTP are required");
     }
+
     const otpRecord = await OTP.findOne({email:email.toLowerCase()});
 
     if(!otpRecord){
@@ -79,7 +81,7 @@ const VerifyOTP = asyncHandler(async(req,res)=>{
         username:username.toLowerCase(),
         email:email.toLowerCase(),
         password,
-    })
+    }).select("-password -refreshToken");
 
     await OTP.findOneAndDelete({email: email.toLowerCase()});
 
@@ -104,9 +106,18 @@ const LoginUser = asyncHandler(async(req,res)=>{
     }
     const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id);
 
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
     return res
     .status(200)
-    .json(new ApiResponse(200, {user, accessToken, refreshToken}, "Login successful"));
+    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .json(new ApiResponse(200, loggedInUser, "Login successful"));
 })
 
 export {registerUser, LoginUser, VerifyOTP};

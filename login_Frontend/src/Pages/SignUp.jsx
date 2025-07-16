@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {FaEyeSlash} from 'react-icons/fa'
 import { FaEye } from 'react-icons/fa'
+import apiconnector from '../APIConnector'
+import { useAuth } from '../Context/AuthContext'
 
 const SignUp = () => {
     const navigate= useNavigate();
@@ -13,6 +15,26 @@ const SignUp = () => {
       e.preventDefault()
       setenable(!enable)
     };
+    const {setUser}=useAuth();
+
+    const verifyUser = (e)=>{
+      setUser(email);
+      e.preventDefault();
+      if (!email || !password || !username) {
+        alert("Please fill all fields");
+        return;
+      }
+      
+      apiconnector.post('/register',{username,email,password})
+      .then((res)=>{
+        console.log(res.data);
+        navigate('/verify')
+      })
+      .catch((err)=>{
+        console.log(err);
+        alert(err.response.data.message);
+      })
+    }
   return (
     <div className='flex flex-col items-center justify-center h-screen w-screen'>
       <div className='w-100 h-150 bg-emerald-400 flex flex-col items-center justify-center rounded-2xl'>
@@ -24,7 +46,7 @@ const SignUp = () => {
             {enable ? <FaEyeSlash className='text-gray-700 text-xl'/> : <FaEye className='text-gray-700 text-xl'/>}
           </button>
           <input value={username} onChange={(e)=>{setUsername(e.target.value)}} type="text" placeholder='Username' className='w-full h-10 bg-gray-200  text-black rounded-lg pl-5 pr-10' />
-          <button onClick={()=>{navigate('/verify')}} type='submit' className='w-full h-10 bg-blue-500 text-white rounded-lg'>Continue</button>
+          <button onClick={verifyUser} type='submit' className='w-full h-10 bg-blue-500 text-white rounded-lg'>Continue</button>
         </form>
       </div>
     </div>
