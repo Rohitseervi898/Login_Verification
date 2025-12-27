@@ -46,11 +46,6 @@ const registerUser = asyncHandler(async(req,res)=>{
         otp
     })
 
-    // const user = await User.create({
-    //     username:username.toLowerCase(),
-    //     email:email.toLowerCase(),
-    //     password,
-    // })
 
     return res
     .status(201)
@@ -81,7 +76,8 @@ const VerifyOTP = asyncHandler(async(req,res)=>{
         username:username.toLowerCase(),
         email:email.toLowerCase(),
         password,
-    }).select("-password -refreshToken");
+    })
+    const createdUser = await User.findById(user._id).select("-password -refreshToken")
 
     await OTP.findOneAndDelete({email: email.toLowerCase()});
 
@@ -106,7 +102,7 @@ const LoginUser = asyncHandler(async(req,res)=>{
     }
     const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id);
 
-    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
     const options = {
         httpOnly: true,
