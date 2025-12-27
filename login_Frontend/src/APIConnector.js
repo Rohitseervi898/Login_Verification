@@ -1,7 +1,5 @@
 import axios from 'axios';
-import dotenv from "dotenv";
-dotenv.config();
 
-const API_BASE_URL = process.env.API;
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 const apiconnector= axios.create({baseURL:API_BASE_URL});
 export default apiconnector;
