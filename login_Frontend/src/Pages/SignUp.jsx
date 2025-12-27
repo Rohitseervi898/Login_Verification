@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {FaEyeSlash} from 'react-icons/fa'
 import { FaEye } from 'react-icons/fa'
 import apiconnector from '../APIConnector'
-import { useAuth } from '../Context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 const SignUp = () => {
     const navigate= useNavigate();

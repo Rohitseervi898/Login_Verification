@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import OTPInput from 'react-otp-input'
 import { useNavigate } from 'react-router-dom';
 import apiconnector from '../APIConnector.js'
-import { useAuth } from '../Context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Verification = () => {
     const [otp,setotp]=useState("");

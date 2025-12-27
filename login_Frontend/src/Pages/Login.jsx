@@ -7,23 +7,27 @@ import apiconnector from '../APIConnector.js'
 const Login = () => {
   const navigate=useNavigate();
   const [enable,setenable]=useState(true);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleeye=(e)=>{
     e.preventDefault()
     setenable(!enable)
   };
-   // Assuming email is the same as username for login
 
   const handleLogin=(e)=>{
     e.preventDefault();
-    apiconnector.post('/login',{password,email:username,username})
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+    apiconnector.post('/login',{email,password})
     .then((response)=>{
       console.log("Login successful", response.data);
       navigate('/home');
     })
     .catch((error)=>{
       console.log("Login failed", error);
+      alert("Login failed. Please check your credentials.");
     })
   }
 
@@ -34,10 +38,10 @@ const Login = () => {
         <h1 className='text-4xl font-bold m-10'>Login</h1>
         <form className='flex flex-col items-center justify-center gap-4 relative w-80'>
           <input 
-            value={username} 
-            onChange={(e)=>{setUsername(e.target.value)}} 
-            type="text" 
-            placeholder='Username/Email' 
+            value={email} 
+            onChange={(e)=>{setEmail(e.target.value)}} 
+            type="email" 
+            placeholder='Email' 
             className='w-full h-10 bg-gray-200 rounded-md text-black pl-5 pr-10' 
           />
           <input 

@@ -4,7 +4,7 @@ import Home from './Pages/Home'
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import SignUp from './Pages/SignUp'
 import Verification from './Pages/Verification'
-import { AuthProvider } from './Context/AuthContext'
+import { AuthProvider } from './Context/AuthContext.jsx'
 const App = () => {
 
   return (
